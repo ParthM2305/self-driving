@@ -64,6 +64,10 @@ output_*/
 # Allow improved evaluation results
 !evaluation_results_improved/
 
+# Allow report visualizations
+!report_visualizations/
+!report_visualizations/*.png
+
 # Logs
 *.log
 logs/
