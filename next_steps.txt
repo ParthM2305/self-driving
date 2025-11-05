@@ -1,0 +1,264 @@
+# Next Steps - Quick Start Guide
+
+## 🚀 5-Command Quick Start
+
+Run these commands in order to test and train your multimodal self-driving model:
+
+### 1. Install Dependencies
+```powershell
+pip install -r requirements.txt
+```
+**What it does**: Installs PyTorch, torchvision, numpy, pandas, and all required libraries.
+**Time**: ~2-5 minutes (depending on internet speed)
+
+---
+
+### 2. Prepare Dataset (Small Test)
+```powershell
+python prepare_data.py --data-dir ./CARLA_15GB/default --out ./data --max-samples 5000
+```
+**What it does**: Converts parquet files to organized JPG images and numpy LiDAR files. Creates train/val/test splits.
+**Time**: ~5-10 minutes for 5000 samples
+**Output**: `./data/` directory with images/, lidar/, and index CSVs
+
+---
+
+### 3. Run Smoke Test (Validation)
+```powershell
+.\run_smoke_test.bat
+```
+**What it does**: End-to-end test with 100 samples - prepares data, trains 1 epoch, runs inference demo.
+**Time**: ~5-10 minutes (CPU), ~2-3 minutes (GPU)
+**Output**: 
+- `./data_smoke_test/` - test dataset
+- `./runs/smoke_test/` - training checkpoint and logs
+- `./output_smoke_test/` - demo visualizations
+
+---
+
+### 4. Full Training (GPU Recommended)
+```powershell
+python train.py --data-dir ./data --epochs 25 --batch-size 64 --device cuda
+```
+**What it does**: Trains the full multimodal model for 25 epochs with mixed precision on GPU.
+**Time**: ~1-2 hours (GPU with 12GB VRAM), ~10-20 hours (CPU - not recommended)
+**Output**: `./runs/run_YYYYMMDD_HHMMSS/checkpoints/checkpoint_epoch025_best.pth`
+
+**CPU Alternative** (much slower):
+```powershell
+python train.py --data-dir ./data --epochs 10 --batch-size 8 --device cpu --num-points 1024
+```
+
+---
+
+### 5. Evaluate & Visualize
+```powershell
+python evaluate.py --checkpoint ./runs/run_*/checkpoints/checkpoint_epoch025_best.pth --data-dir ./data --split test
+```
+**What it does**: Computes metrics (MSE, MAE, RMSE, R²) and creates visualizations.
+**Time**: ~2-5 minutes
+**Output**: 
+- `./evaluation_results/metrics.json`
+- `./evaluation_results/predictions.csv`
+- `./evaluation_results/scatter_plots.png`
+- `./evaluation_results/error_distributions.png`
+
+---
+
+## 🎯 Full Pipeline Commands (Copy-Paste Ready)
+
+### For GPU Users:
+```powershell
+# Step 1: Install
+pip install -r requirements.txt
+
+# Step 2: Prepare data (20K samples, ~30 mins)
+python prepare_data.py --data-dir ./CARLA_15GB/default --out ./data --max-samples 20000
+
+# Step 3: Train (25 epochs, ~1-2 hours)
+python train.py --data-dir ./data --epochs 25 --batch-size 64 --device cuda --lidar-mode pointnet --num-points 4096
+
+# Step 4: Evaluate
+python evaluate.py --checkpoint ./runs/run_*/checkpoints/checkpoint_epoch025_best.pth --data-dir ./data --split test --output-dir ./evaluation_results
+
+# Step 5: Demo
+python inference_demo.py --checkpoint ./runs/run_*/checkpoints/checkpoint_epoch025_best.pth --data-dir ./data --n-samples 10 --render-bev
+```
+
+### For CPU Users (Reduced Settings):
+```powershell
+# Step 1: Install
+pip install -r requirements.txt
+
+# Step 2: Prepare data (smaller dataset)
+python prepare_data.py --data-dir ./CARLA_15GB/default --out ./data --max-samples 5000
+
+# Step 3: Train (reduced settings)
+python train.py --data-dir ./data --epochs 10 --batch-size 8 --device cpu --num-points 1024 --lidar-mode bev --workers 2
+
+# Step 4: Evaluate
+python evaluate.py --checkpoint ./runs/run_*/checkpoints/checkpoint_epoch010_best.pth --data-dir ./data --split test --batch-size 16 --num-points 1024
+
+# Step 5: Demo
+python inference_demo.py --checkpoint ./runs/run_*/checkpoints/checkpoint_epoch010_best.pth --data-dir ./data --n-samples 5 --num-points 1024
+```
+
+---
+
+## 📊 Expected Outputs
+
+### After Data Preparation:
+```
+data/
+├── images/
+│   ├── train/       (3000+ JPG files)
+│   ├── validation/  (1000+ JPG files)
+│   └── test/        (1000+ JPG files)
+├── lidar/
+│   ├── train/       (3000+ .npy files)
+│   ├── validation/  (1000+ .npy files)
+│   └── test/        (1000+ .npy files)
+├── train_index.csv
+├── validation_index.csv
+├── test_index.csv
+└── *_stats.json
+```
+
+### After Training:
+```
+runs/run_YYYYMMDD_HHMMSS/
+├── checkpoints/
+│   ├── checkpoint_epoch001.pth
+│   ├── checkpoint_epoch025.pth
+│   └── checkpoint_epoch025_best.pth  ← Use this!
+├── visualizations/
+│   └── val_predictions_epoch*.png
+├── config.json
+├── training.log
+├── training_history.json
+└── training_curves.png
+```
+
+### After Evaluation:
+```
+evaluation_results/
+├── metrics.json                 ← Performance metrics
+├── predictions.csv              ← All predictions
+├── scatter_plots.png           ← Pred vs Actual
+├── error_distributions.png     ← Error histograms
+├── error_vs_actual.png         ← Error analysis
+└── correlation_matrix.png      ← Correlation heatmap
+```
+
+---
+
+## 🔍 Monitoring Training
+
+### Check Training Progress:
+```powershell
+# View live log
+Get-Content -Path ".\runs\run_*\training.log" -Wait
+
+# Or open in notepad
+notepad .\runs\run_*\training.log
+```
+
+### Typical Training Output:
+```
+Epoch 1/25 [Train]: 100%|██████████| 47/47 [00:45<00:00]
+  loss: 0.0523, steer: 0.0312, throttle: 0.0198, brake: 0.0156
+Epoch 1/25 [Val]: 100%|██████████| 16/16 [00:08<00:00]
+  loss: 0.0487, steer: 0.0289
+Epoch 1/25 - Train Loss: 0.0523 - Val Loss: 0.0487 - Val Steer MAE: 0.0654 - Time: 53.2s
+```
+
+---
+
+## 💡 Pro Tips
+
+1. **Start with smoke test**: Always run `.\run_smoke_test.bat` first to verify everything works
+
+2. **Use small dataset first**: Train on 5000 samples to iterate quickly, then scale up
+
+3. **Monitor GPU usage**: 
+   ```powershell
+   nvidia-smi -l 1
+   ```
+
+4. **Resume interrupted training**:
+   ```powershell
+   python train.py --data-dir ./data --resume ./runs/run_*/checkpoints/checkpoint_epoch010.pth --epochs 50
+   ```
+
+5. **Compare LiDAR encoders**:
+   ```powershell
+   # PointNet (best accuracy, slower)
+   python train.py --lidar-mode pointnet --num-points 4096
+   
+   # BEV (faster, good accuracy)
+   python train.py --lidar-mode bev
+   
+   # Sector Hist (fastest, lower accuracy)
+   python train.py --lidar-mode sector_hist
+   ```
+
+---
+
+## 🐛 Quick Troubleshooting
+
+### "CUDA out of memory"
+```powershell
+python train.py --batch-size 16 --num-points 2048
+```
+
+### "Too slow on CPU"
+```powershell
+python train.py --lidar-mode bev --batch-size 4 --workers 2
+```
+
+### "ImportError: No module named 'torch'"
+```powershell
+pip install -r requirements.txt --force-reinstall
+```
+
+### "FileNotFoundError: No parquet files"
+Check that `CARLA_15GB/default/partial-train/` exists and contains .parquet files
+
+---
+
+## 📈 Performance Targets
+
+After 25 epochs on GPU with 20K samples:
+
+| Metric | Steering | Throttle | Brake |
+|--------|----------|----------|-------|
+| MAE | < 0.08 | < 0.05 | < 0.04 |
+| R² | > 0.75 | > 0.70 | > 0.65 |
+
+If your results are significantly worse:
+- Train longer (50+ epochs)
+- Use more data (50K+ samples)
+- Try different learning rates (5e-5, 2e-4)
+- Ensure data quality is good
+
+---
+
+## 🎓 Learning Resources
+
+- **PyTorch Tutorial**: https://pytorch.org/tutorials/
+- **CARLA Simulator**: https://carla.org/
+- **PointNet Paper**: https://arxiv.org/abs/1612.00593
+- **End-to-End Learning**: https://arxiv.org/abs/1604.07316
+
+---
+
+## ✅ Success Checklist
+
+- [ ] Dependencies installed (`pip install -r requirements.txt`)
+- [ ] Smoke test passed (`.\run_smoke_test.bat`)
+- [ ] Data prepared (5K+ samples)
+- [ ] Model trained (10+ epochs)
+- [ ] Evaluation completed (metrics.json generated)
+- [ ] Demo visualizations created
+
+**You're ready to go! Start with Step 1 above.** 🚀

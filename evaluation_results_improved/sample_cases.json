@@ -1,0 +1,92 @@
+[
+  {
+    "index": 548,
+    "actual": {
+      "steer": -0.026608766987919807,
+      "throttle": 0.0,
+      "brake": 1.0
+    },
+    "predicted": {
+      "steer": -0.0024277381598949432,
+      "throttle": 0.04801191762089729,
+      "brake": 0.9469152688980103
+    },
+    "errors": {
+      "steer": 0.024181028828024864,
+      "throttle": 0.04801191762089729,
+      "brake": 0.053084731101989746
+    },
+    "actual_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "IDLE (coasting)",
+      "brake": "HARD braking",
+      "decision": "HARD braking"
+    },
+    "predicted_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "IDLE (coasting)",
+      "brake": "HARD braking",
+      "decision": "HARD braking"
+    }
+  },
+  {
+    "index": 704,
+    "actual": {
+      "steer": 0.02912191115319729,
+      "throttle": 0.0,
+      "brake": 1.0
+    },
+    "predicted": {
+      "steer": -0.0023116283118724823,
+      "throttle": 0.047797296196222305,
+      "brake": 0.9478155970573425
+    },
+    "errors": {
+      "steer": 0.03143353946506977,
+      "throttle": 0.047797296196222305,
+      "brake": 0.05218440294265747
+    },
+    "actual_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "IDLE (coasting)",
+      "brake": "HARD braking",
+      "decision": "HARD braking"
+    },
+    "predicted_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "IDLE (coasting)",
+      "brake": "HARD braking",
+      "decision": "HARD braking"
+    }
+  },
+  {
+    "index": 244,
+    "actual": {
+      "steer": 0.005039212293922901,
+      "throttle": 0.0691353976726532,
+      "brake": 0.0
+    },
+    "predicted": {
+      "steer": -0.037262290716171265,
+      "throttle": 0.12389875948429108,
+      "brake": 0.04910723492503166
+    },
+    "errors": {
+      "steer": 0.042301503010094166,
+      "throttle": 0.05476336181163788,
+      "brake": 0.04910723492503166
+    },
+    "actual_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "IDLE (coasting)",
+      "brake": "NO BRAKE (released)",
+      "decision": "Maintaining speed"
+    },
+    "predicted_interpretation": {
+      "steer": "STRAIGHT",
+      "throttle": "LIGHT acceleration",
+      "brake": "NO BRAKE (released)",
+      "decision": "Maintaining speed"
+    }
+  }
+]

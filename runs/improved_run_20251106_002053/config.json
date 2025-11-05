@@ -1,0 +1,20 @@
+{
+  "data_dir": "./data",
+  "save_dir": "./runs",
+  "lidar_mode": "pointnet",
+  "pretrained": true,
+  "epochs": 100,
+  "batch_size": 16,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "scheduler": "cosine",
+  "grad_clip": 1.0,
+  "label_smoothing": 0.05,
+  "early_stop_patience": 15,
+  "num_points": 1024,
+  "image_size": 224,
+  "workers": 2,
+  "device": "auto",
+  "seed": 42,
+  "resume": null
+}

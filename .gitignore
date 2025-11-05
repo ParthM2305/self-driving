@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data and outputs (large files)
+data/
+data_*/
+CARLA_15GB/
+*.parquet
+
+# Model checkpoints and runs (keep best improved model only)
+runs/improved_run_*/checkpoints/checkpoint_epoch0[013-9]*.pth
+runs/improved_run_*/checkpoints/checkpoint_epoch0[1-9][0-9]*.pth
+runs/improved_run_*/checkpoints/checkpoint_epoch[1-9][0-9]*.pth
+checkpoints/
+*.pt
+
+# Allow the best improved model checkpoint
+!runs/improved_run_20251106_002053/checkpoints/checkpoint_epoch002_best.pth
+
+# Evaluation outputs (keep improved results only)
+evaluation_results/
+demo_outputs/
+output_*/
+*.png
+*.jpg
+*.gif
+*.mp4
+
+# Allow improved evaluation results
+!evaluation_results_improved/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+temp/
+
+# Large arrays
+*.npy
+*.npz
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar

@@ -1,0 +1,289 @@
+================================================================================
+           MULTIMODAL SELF-DRIVING MODEL - EXECUTION FLOWCHART
+================================================================================
+
+                            📦 INSTALLATION PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  pip install -r requirements.txt  │
+                    │  (2-5 minutes)                     │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  python test_setup.py          │
+                    │  (Validates environment)       │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                            
+                            ✅ VALIDATION PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  .\run_smoke_test.bat          │
+                    │  (5-10 minutes)                │
+                    │  • Prepares 100 samples        │
+                    │  • Trains 1 epoch              │
+                    │  • Runs inference              │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  Check outputs:                │
+                    │  • data_smoke_test/            │
+                    │  • runs/smoke_test/            │
+                    │  • output_smoke_test/          │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                            
+                        🔨 DATA PREPARATION PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  python prepare_data.py        │
+                    │  --data-dir ./CARLA_15GB/default  │
+                    │  --out ./data                  │
+                    │  --max-samples 10000           │
+                    │  (10-30 minutes)               │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  Verify:                       │
+                    │  python prepare_data.py --verify  │
+                    │  python dataset.py --sanity    │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                            
+                         🚀 TRAINING PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  GPU: python train.py          │
+                    │  --data-dir ./data             │
+                    │  --epochs 25                   │
+                    │  --batch-size 64               │
+                    │  --device cuda                 │
+                    │  (1-2 hours)                   │
+                    │                                │
+                    │  CPU: python train.py          │
+                    │  --data-dir ./data             │
+                    │  --epochs 10                   │
+                    │  --batch-size 8                │
+                    │  --device cpu                  │
+                    │  (10-20 hours)                 │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  Monitor:                      │
+                    │  • Training log                │
+                    │  • Training curves             │
+                    │  • Checkpoints saved           │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                            
+                        📊 EVALUATION PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  python evaluate.py            │
+                    │  --checkpoint runs/.../best.pth│
+                    │  --data-dir ./data             │
+                    │  --split test                  │
+                    │  (2-5 minutes)                 │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  Check outputs:                │
+                    │  • metrics.json                │
+                    │  • predictions.csv             │
+                    │  • scatter_plots.png           │
+                    │  • error_distributions.png     │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                            
+                         🎨 DEMO PHASE
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  python inference_demo.py      │
+                    │  --checkpoint runs/.../best.pth│
+                    │  --data-dir ./data             │
+                    │  --n-samples 10                │
+                    │  (1-2 minutes)                 │
+                    └────────────────┬───────────────────┘
+                                     ↓
+                    ┌────────────────────────────────┐
+                    │  View outputs:                 │
+                    │  • demo_outputs/sample_*.png   │
+                    │  • Steering overlays           │
+                    │  • LiDAR BEV views             │
+                    │  • Control value tables        │
+                    └────────────────────────────────┘
+                                     ↓
+                            
+                         ✅ PROJECT COMPLETE!
+
+================================================================================
+                             ALTERNATIVE PATHS
+================================================================================
+
+Quick Interactive Mode:
+    .\quick_run.bat → Choose task (test/smoke/prepare/train/eval/demo)
+
+Resume Training:
+    python train.py --resume runs/.../checkpoint_epoch010.pth --epochs 50
+
+Different LiDAR Modes:
+    --lidar-mode pointnet    (Best accuracy, slower)
+    --lidar-mode bev         (Fast, good accuracy)
+    --lidar-mode sector_hist (Fastest, lower accuracy)
+
+Custom Configuration:
+    python train.py --config config_example.yaml
+
+================================================================================
+                             FILE STRUCTURE
+================================================================================
+
+Project Root/
+├── START_HERE.md          ← Read this first!
+├── README.md              ← Full documentation
+├── next_steps.txt         ← Step-by-step guide
+├── requirements.txt       ← Dependencies
+│
+├── Core Scripts:
+│   ├── prepare_data.py    ← Data preparation
+│   ├── dataset.py         ← Dataset classes
+│   ├── model.py           ← Model architectures
+│   ├── train.py           ← Training loop
+│   ├── evaluate.py        ← Evaluation
+│   ├── inference_demo.py  ← Visualization
+│   └── utils.py           ← Helper functions
+│
+├── Helper Scripts:
+│   ├── test_setup.py      ← Pre-flight check
+│   ├── run_smoke_test.bat ← End-to-end test
+│   └── quick_run.bat      ← Interactive launcher
+│
+└── Generated Outputs:
+    ├── data/              ← Prepared dataset
+    ├── runs/              ← Training runs
+    ├── evaluation_results/← Metrics & plots
+    └── demo_outputs/      ← Demo visualizations
+
+================================================================================
+                          SUCCESS METRICS
+================================================================================
+
+After Smoke Test:
+    ✓ 100 samples prepared
+    ✓ 1 epoch trained
+    ✓ 3 demo images created
+    ✓ No errors
+
+After Full Training (25 epochs):
+    ✓ Validation loss < 0.05
+    ✓ Steering MAE < 0.08
+    ✓ Throttle MAE < 0.05
+    ✓ Brake MAE < 0.04
+    ✓ R² > 0.70 for all controls
+
+After Evaluation:
+    ✓ metrics.json created
+    ✓ 6 visualization plots
+    ✓ predictions.csv with all samples
+    ✓ R² scores match expectations
+
+================================================================================
+                          TROUBLESHOOTING TREE
+================================================================================
+
+Problem: Installation fails
+    → pip install --upgrade pip
+    → pip install -r requirements.txt --force-reinstall
+
+Problem: CUDA out of memory
+    → Reduce --batch-size (try 32, 16, 8)
+    → Reduce --num-points (try 2048, 1024)
+    → Use --lidar-mode bev
+
+Problem: Training too slow
+    → Use GPU: --device cuda
+    → Reduce dataset: --max-samples 5000
+    → Use BEV mode: --lidar-mode bev
+    → Reduce epochs: --epochs 10
+
+Problem: Poor accuracy
+    → Train longer: --epochs 50
+    → Use more data: remove --max-samples
+    → Increase model capacity: --num-points 8192
+    → Check data quality
+
+Problem: Can't find checkpoint
+    → List: dir runs\*\checkpoints\*.pth
+    → Use most recent run folder
+    → Look for *_best.pth file
+
+================================================================================
+                        QUICK REFERENCE COMMANDS
+================================================================================
+
+# Test everything is working
+python test_setup.py
+
+# Smoke test (minimal validation)
+.\run_smoke_test.bat
+
+# Prepare data (quick)
+python prepare_data.py --data-dir ./CARLA_15GB/default --out ./data --max-samples 5000
+
+# Prepare data (full)
+python prepare_data.py --data-dir ./CARLA_15GB/default --out ./data
+
+# Train (GPU)
+python train.py --data-dir ./data --epochs 25 --device cuda
+
+# Train (CPU)
+python train.py --data-dir ./data --epochs 10 --batch-size 8 --device cpu
+
+# Evaluate
+python evaluate.py --checkpoint <path> --data-dir ./data --split test
+
+# Demo
+python inference_demo.py --checkpoint <path> --data-dir ./data --n-samples 10
+
+# Interactive mode
+.\quick_run.bat
+
+================================================================================
+                         EXPECTED TIMELINE
+================================================================================
+
+First Time Setup:
+    Installation:      2-5 minutes
+    Test Setup:        30 seconds
+    Smoke Test:        5-10 minutes
+    Total:             ~15 minutes
+
+Full Pipeline (GPU):
+    Data Prep:         10-30 minutes
+    Training:          1-2 hours
+    Evaluation:        2-5 minutes
+    Demo:              1-2 minutes
+    Total:             ~2-3 hours
+
+Full Pipeline (CPU):
+    Data Prep:         10-30 minutes
+    Training:          10-20 hours
+    Evaluation:        5-10 minutes
+    Demo:              2-5 minutes
+    Total:             ~12-24 hours
+
+================================================================================
+                       🎉 YOU'RE READY TO START!
+================================================================================
+
+Begin with:
+    1. pip install -r requirements.txt
+    2. python test_setup.py
+    3. .\run_smoke_test.bat
+
+Then follow the flowchart above for the full pipeline.
+
+For detailed help, see START_HERE.md and README.md
+
+Good luck! 🚀
+================================================================================

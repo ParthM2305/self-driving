@@ -1,0 +1,44 @@
+# Example configuration file for training experiments
+# Save as config.yaml and use with: python train.py --config config.yaml
+
+# Data settings
+data_dir: "./data"
+lidar_mode: "pointnet"  # Options: pointnet, bev, sector_hist
+num_points: 4096
+image_size: 224
+
+# Model settings
+pretrained: true
+freeze_backbone: false
+
+# Training settings
+epochs: 25
+batch_size: null  # null for auto-detection
+lr: 0.0001
+weight_decay: 0.0001
+grad_clip: 1.0
+
+# Loss weights
+steer_weight: 1.0
+throttle_weight: 0.5
+brake_weight: 0.5
+
+# Scheduler
+scheduler: "plateau"  # Options: plateau, cosine, none
+
+# System settings
+device: "auto"  # Options: auto, cuda, cpu
+workers: null  # null for auto-detection
+use_amp: true
+no_data_parallel: false
+
+# Output settings
+save_dir: "./runs"
+run_name: null  # null for auto-generated timestamp
+vis_every: 5
+
+# Reproducibility
+seed: 42
+
+# Debug mode
+debug: false
