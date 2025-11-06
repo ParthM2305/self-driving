@@ -64,9 +64,12 @@ output_*/
 # Allow improved evaluation results
 !evaluation_results_improved/
 
-# Allow report visualizations
-!report_visualizations/
-!report_visualizations/*.png
+# Allow baseline visualizations
+!baseline_84pct_visualizations/
+!baseline_84pct_visualizations/*.png
+
+# Allow baseline test results
+!evaluation_results_baseline_test/
 
 # Logs
 *.log
