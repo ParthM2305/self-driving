@@ -209,8 +209,13 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 for idx, (output_key, output_label, color) in enumerate(zip(outputs_keys, outputs_labels, colors)):
     ax = axes[idx]
     
-    actual = predictions_df[f'actual_{output_key}'].values
-    predicted = predictions_df[f'predicted_{output_key}'].values
+    # Handle both naming conventions: actual_X/predicted_X or X_actual/X_pred
+    if f'actual_{output_key}' in predictions_df.columns:
+        actual = predictions_df[f'actual_{output_key}'].values
+        predicted = predictions_df[f'predicted_{output_key}'].values
+    else:
+        actual = predictions_df[f'{output_key}_actual'].values
+        predicted = predictions_df[f'{output_key}_pred'].values
     
     # Scatter plot
     ax.scatter(actual, predicted, alpha=0.5, s=20, color=color, edgecolors='black', linewidth=0.5)
@@ -246,8 +251,13 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 for idx, (output_key, output_label, color) in enumerate(zip(outputs_keys, outputs_labels, colors)):
     ax = axes[idx]
     
-    actual = predictions_df[f'actual_{output_key}'].values
-    predicted = predictions_df[f'predicted_{output_key}'].values
+    # Handle both naming conventions
+    if f'actual_{output_key}' in predictions_df.columns:
+        actual = predictions_df[f'actual_{output_key}'].values
+        predicted = predictions_df[f'predicted_{output_key}'].values
+    else:
+        actual = predictions_df[f'{output_key}_actual'].values
+        predicted = predictions_df[f'{output_key}_pred'].values
     errors = predicted - actual
     
     # Histogram
@@ -375,10 +385,10 @@ summary_text = f"""
 ┌───────────────────────────────────────────────────────────────────────────┐
 │  OVERALL METRICS                                                          │
 ├───────────────────────────────────────────────────────────────────────────┤
-│  • Overall Accuracy (±10%):     {metrics['overall']['accuracy']['±0.10']:.2f}%                              │
+│  • Overall Accuracy (±10%):     {metrics['overall'].get('accuracy_10pct', metrics['overall'].get('accuracy', {}).get('±0.10', 0)):.2f}%                              │
 │  • Mean Squared Error:          {metrics['overall']['mse']:.4f}                                    │
 │  • Mean Absolute Error:         {metrics['overall']['mae']:.4f}                                    │
-│  • R² Score:                    {metrics['overall']['r2_score']:.4f}                                    │
+│  • R² Score:                    {metrics['overall'].get('r2', metrics['overall'].get('r2_score', 0)):.4f}                                    │
 │  • Correlation:                 {metrics['overall']['correlation']:.4f}                                    │
 └───────────────────────────────────────────────────────────────────────────┘
 
@@ -448,8 +458,13 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 for idx, (output, color) in enumerate(zip(outputs, colors)):
     ax = axes[idx]
     
-    actual = predictions_df[f'actual_{output}'].values
-    predicted = predictions_df[f'predicted_{output}'].values
+    # Handle both naming conventions
+    if f'actual_{output}' in predictions_df.columns:
+        actual = predictions_df[f'actual_{output}'].values
+        predicted = predictions_df[f'predicted_{output}'].values
+    else:
+        actual = predictions_df[f'{output}_actual'].values
+        predicted = predictions_df[f'{output}_pred'].values
     
     # Classify into bins
     bins = [-np.inf, 0.2, 0.4, 0.6, 0.8, np.inf]
@@ -483,8 +498,13 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 for idx, (output, color) in enumerate(zip(outputs, colors)):
     ax = axes[idx]
     
-    actual = predictions_df[f'actual_{output}'].values
-    predicted = predictions_df[f'predicted_{output}'].values
+    # Handle both naming conventions
+    if f'actual_{output}' in predictions_df.columns:
+        actual = predictions_df[f'actual_{output}'].values
+        predicted = predictions_df[f'predicted_{output}'].values
+    else:
+        actual = predictions_df[f'{output}_actual'].values
+        predicted = predictions_df[f'{output}_pred'].values
     residuals = predicted - actual
     
     # Residual plot
